@@ -1,5 +1,4 @@
 
-## DDoS Attacks README.md
 
 # 🚫 DDoS (Distributed Denial of Service) Attacks
 
