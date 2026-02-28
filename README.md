@@ -27,6 +27,162 @@ This repository aims to provide cybersecurity professionals, developers, and ent
 - **Prevention techniques** with code examples
 - **Best practices** for implementation
 
+## REPOSITORY STRUCTURE
+```markdown
+cybersecurity-threats-guide/
+│
+├── README.md
+├── LICENSE
+├── CONTRIBUTING.md
+│
+├── 01-network-security/
+│   ├── README.md
+│   ├── ddos-attacks/
+│   │   ├── README.md
+│   │   ├── detection/
+│   │   │   ├── ddos_detection.py
+│   │   │   └── traffic_analyzer.py
+│   │   └── prevention/
+│   │       ├── rate_limiting.py
+│   │       └── firewall_rules.txt
+│   │
+│   ├── man-in-the-middle/
+│   │   ├── README.md
+│   │   ├── detection/
+│   │   │   ├── arp_spoof_detector.py
+│   │   │   └── ssl_strip_detector.py
+│   │   └── prevention/
+│   │       ├── ssl_tls_config.py
+│   │       └── certificate_pinning.py
+│   │
+│   └── port-scanning/
+│       ├── README.md
+│       ├── detection/
+│       │   ├── port_scan_detector.py
+│       │   └── ids_rules.txt
+│       └── prevention/
+│           ├── firewall_config.py
+│           └── stealth_mode.py
+│
+├── 02-web-application-security/
+│   ├── README.md
+│   ├── sql-injection/
+│   │   ├── README.md
+│   │   ├── detection/
+│   │   │   ├── sql_injection_scanner.py
+│   │   │   └── waf_rules.txt
+│   │   └── prevention/
+│   │       ├── parameterized_queries.py
+│   │       └── input_validation.py
+│   │
+│   ├── xss-attacks/
+│   │   ├── README.md
+│   │   ├── detection/
+│   │   │   ├── xss_detector.py
+│   │   │   └── csp_analyzer.py
+│   │   └── prevention/
+│   │       ├── output_encoding.py
+│   │       └── csp_headers.py
+│   │
+│   └── csrf/
+│       ├── README.md
+│       ├── detection/
+│       │   ├── csrf_tester.py
+│       │   └── token_analyzer.py
+│       └── prevention/
+│           ├── csrf_protection.py
+│           └── same_site_cookies.py
+│
+├── 03-malware-analysis/
+│   ├── README.md
+│   ├── ransomware/
+│   │   ├── README.md
+│   │   ├── detection/
+│   │   │   ├── ransomware_behavior.py
+│   │   │   └── file_monitor.py
+│   │   └── prevention/
+│   │       ├── backup_system.py
+│   │       └── app_whitelisting.py
+│   │
+│   ├── trojans/
+│   │   ├── README.md
+│   │   ├── detection/
+│   │   │   ├── trojan_scanner.py
+│   │   │   └── process_analyzer.py
+│   │   └── prevention/
+│   │       ├── av_config.py
+│   │       └── sandbox_setup.py
+│   │
+│   └── rootkits/
+│       ├── README.md
+│       ├── detection/
+│       │   ├── rootkit_detector.py
+│       │   └── integrity_checker.py
+│       └── prevention/
+│           ├── secure_boot.py
+│           └── kernel_patching.py
+│
+├── 04-social-engineering/
+│   ├── README.md
+│   ├── phishing/
+│   │   ├── README.md
+│   │   ├── detection/
+│   │   │   ├── phishing_detector.py
+│   │   │   └── email_analyzer.py
+│   │   └── prevention/
+│   │       ├── training_materials.md
+│   │       └── email_filters.py
+│   │
+│   └── pretexting/
+│       ├── README.md
+│       ├── detection/
+│       │   └── social_engineering_detector.py
+│       └── prevention/
+│           └── security_policy.md
+│
+├── 05-cryptography/
+│   ├── README.md
+│   ├── encryption/
+│   │   ├── README.md
+│   │   ├── symmetric/
+│   │   │   └── aes_example.py
+│   │   └── asymmetric/
+│   │       └── rsa_example.py
+│   │
+│   └── hashing/
+│       ├── README.md
+│       ├── password_hashing.py
+│       └── integrity_checker.py
+│
+├── 06-incident-response/
+│   ├── README.md
+│   ├── forensics/
+│   │   ├── README.md
+│   │   ├── memory_analyzer.py
+│   │   └── disk_forensics.py
+│   │
+│   └── containment/
+│       ├── README.md
+│       ├── isolation_script.py
+│       └── backup_recovery.py
+│
+├── scripts/
+│   ├── network_monitor.py
+│   ├── vulnerability_scanner.py
+│   ├── log_analyzer.py
+│   └── security_checklist.py
+│
+├── tools/
+│   ├── README.md
+│   ├── setup_tools.sh
+│   └── requirements.txt
+│
+└── resources/
+    ├── useful_links.md
+    ├── books.md
+    └── certifications.md
+```
+
 ## 📚 Categories
 
 ### 1. [Network Security](01-network-security/README.md)
