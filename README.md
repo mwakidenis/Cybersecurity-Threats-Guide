@@ -80,3 +80,64 @@ This repository aims to provide cybersecurity professionals, developers, and ent
 ```bash
 git clone https://github.com/Bd-Mutant7/cybersecurity-threats-guide.git
 cd cybersecurity-threats-guide
+```
+2. Install required dependencies:
+
+```bash
+pip install -r tools/requirements.txt
+```
+3. Set up the tools (optional):
+```bash
+chmod +x tools/setup_tools.sh
+./tools/setup_tools.sh
+```
+
+## 💻 Usage
+### Running Detection Scripts
+Navigate to the specific threat category and run the detection script:
+```bash
+cd 01-network-security/ddos-attacks/detection/
+python ddos_detection.py --interface eth0 --threshold 1000
+```
+
+### Implementing Prevention
+Check the prevention folder in each category for implementation examples:
+```python
+# Example: SQL Injection Prevention
+from prevention.parameterized_queries import safe_query
+
+result = safe_query("SELECT * FROM users WHERE email = %s", (user_email,))
+```
+## 🤝 Contributing
+
+Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
+
+### How to Contribute
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## ⚠️ Disclaimer
+
+**IMPORTANT**: The code and information in this repository are for **educational and defensive purposes only**.
+
+- Do not use these techniques against systems you don't own or have explicit permission to test
+- Always follow responsible disclosure practices
+- The author is not responsible for any misuse of this information
+- Some scripts may trigger security alerts - use only in controlled environments
+
+## 📞 Contact
+
+- GitHub: [@Bd-Mutant7](https://github.com/Bd-Mutant7)
+- Create an issue for questions or suggestions
+
+## ⭐ Support
+
+If you find this repository helpful, please give it a star! It helps others discover this resource.
