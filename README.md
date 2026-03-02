@@ -32,19 +32,19 @@ This repository aims to provide cybersecurity professionals, developers, and ent
 
 | Metric | Count |
 |--------|-------|
-| **Total Sections** | 3/6 |
-| **Total Topics** | 9+ |
-| **Python Scripts** | 41 |
+| **Total Sections** | 6/6 |
+| **Total Topics** | 18+ |
+| **Python Scripts** | 45+ |
 | **Shell Scripts** | 2 |
-| **Documentation Files** | 15 |
-| **Configuration Files** | 5 |
-| **Total Files** | 63 |
+| **Documentation Files** | 18+ |
+| **Configuration Files** | 6+ |
+| **Total Files** | 74+ |
 | **Contributors** | 1 |
-| **Total Commits** | 61 |
+| **Total Commits** | 74 |
 
-*Last updated: 2024-01-15 14:30:22 (Auto-updated via GitHub Actions)*
+*Last updated: [CURRENT_DATE] (Auto-updated via GitHub Actions)*
 
-![Progress](https://progress-bar.dev/50/?title=Sections%20Complete)
+![Progress](https://progress-bar.dev/100/?title=Sections%20Complete)
 
 
 ## REPOSITORY STRUCTURE
