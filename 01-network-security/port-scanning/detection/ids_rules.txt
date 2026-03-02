@@ -1,6 +1,6 @@
 # IDS/IPS Rules for Port Scan Detection
 # Location: 01-network-security/port-scanning/detection/ids_rules.txt
-
+#
 # These rules can be used with Snort, Suricata, or other IDS/IPS systems
 # to detect various types of port scanning activities.
 
@@ -120,3 +120,223 @@ alert tcp $EXTERNAL_NET any -> $HOME_NET [20,21] (msg:"PORT-SCAN FTP scan"; \
 ------------------------------------------------------------------------------
 
 # Detect Nmap TCP scan
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"PORT-SCAN Nmap TCP scan"; \
+    content:"Nmap"; depth:4; http_header; \
+    reference:url,nmap.org; classtype:attempted-recon; sid:1000017; rev:1;)
+
+# Detect Nmap OS fingerprinting
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"PORT-SCAN Nmap OS fingerprint"; \
+    flags:SF; seq:123456789; window:1024; \
+    reference:url,nmap.org; classtype:attempted-recon; sid:1000018; rev:1;)
+
+# Detect Nmap idle scan (zombie scan)
+alert ip $EXTERNAL_NET any -> $HOME_NET any (msg:"PORT-SCAN Nmap idle scan"; \
+    ip_id:0; fragbits:M; detection_filter:track by_src, count 10, seconds 5; \
+    reference:url,nmap.org; classtype:attempted-recon; sid:1000019; rev:1;)
+
+# 6. Masscan Detection
+------------------------------------------------------------------------------
+
+# Detect Masscan high-speed scanning
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"PORT-SCAN Masscan detected"; \
+    flow:stateless; threshold:type both, track by_src, count 100, seconds 1; \
+    reference:url,github.com/robertdavidgraham/masscan; \
+    classtype:attempted-recon; sid:1000020; rev:1;)
+
+# 7. Zmap Detection
+------------------------------------------------------------------------------
+
+# Detect Zmap internet-wide scanning
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"PORT-SCAN Zmap detected"; \
+    ttl:<64; threshold:type both, track by_src, count 1000, seconds 1; \
+    reference:url,zmap.io; classtype:attempted-recon; sid:1000021; rev:1;)
+
+===============================================================================
+# SURICATA RULES (Enhanced)
+===============================================================================
+
+# 1. Rate-based detection using flowbit
+------------------------------------------------------------------------------
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"PORT-SCAN Rate-based detection"; \
+    flow:stateless; flags:S; \
+    flowbits:set,scan.scanner; \
+    detection_filter:track by_src, count 100, seconds 10; \
+    classtype:attempted-recon; sid:2000001; rev:1;)
+
+# 2. Portscan detection using threshold
+------------------------------------------------------------------------------
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"PORT-SCAN Portscan threshold"; \
+    flags:S; threshold:type threshold, track by_src, count 50, seconds 10; \
+    classtype:attempted-recon; sid:2000002; rev:1;)
+
+# 3. Distributed portscan detection
+------------------------------------------------------------------------------
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"PORT-SCAN Distributed portscan"; \
+    flags:S; threshold:type both, track by_dst, count 100, seconds 10; \
+    classtype:attempted-recon; sid:2000003; rev:1;)
+
+===============================================================================
+# FAIL2BAN CONFIGURATION
+===============================================================================
+
+# /etc/fail2ban/jail.local
+
+[port-scan]
+enabled = true
+port = all
+filter = port-scan
+logpath = /var/log/syslog
+          /var/log/auth.log
+          /var/log/nginx/access.log
+maxretry = 20
+bantime = 3600
+findtime = 60
+action = iptables[name=port-scan, port=all, protocol=tcp]
+
+# Custom filter for port scan detection
+# /etc/fail2ban/filter.d/port-scan.conf
+
+[Definition]
+failregex = ^.*Possible port scan from <HOST>.*$
+            ^.*Scan detected from <HOST>.*$
+            ^.*Connection attempt from <HOST> to port \d+.*$
+            ^.*<HOST>.*connected to \d+ different ports.*$
+ignoreregex =
+
+===============================================================================
+# OSSEC RULES
+===============================================================================
+
+<!-- /var/ossec/rules/local_rules.xml -->
+
+<group name="port-scan,">
+  <!-- Port scan detection -->
+  <rule id="100001" level="7">
+    <if_sid>5710</if_sid>
+    <match>^Possible port scan</match>
+    <description>Possible port scan detected</description>
+    <group>recon,port_scan,</group>
+  </rule>
+
+  <!-- Multiple connection attempts -->
+  <rule id="100002" level="8">
+    <if_sid>5712</if_sid>
+    <match>multiple connection attempts</match>
+    <description>Multiple connection attempts from same source</description>
+    <group>recon,port_scan,</group>
+  </rule>
+
+  <!-- SYN scan detection -->
+  <rule id="100003" level="9">
+    <if_sid>5715</if_sid>
+    <match>SYN scan</match>
+    <description>SYN scan detected</description>
+    <group>recon,port_scan,</group>
+  </rule>
+</group>
+
+===============================================================================
+# CUSTOM PYTHON DETECTION SCRIPT (for integration)
+===============================================================================
+
+# save as: port_scan_honeypot.py
+
+"""
+import socket
+import threading
+from collections import defaultdict
+import time
+
+class PortHoneypot:
+    def __init__(self, ports=[22,80,443,3306,5432]):
+        self.ports = ports
+        self.scanners = defaultdict(int)
+        
+    def start_honeypot(self):
+        for port in self.ports:
+            thread = threading.Thread(target=self.listen_port, args=(port,))
+            thread.daemon = True
+            thread.start()
+    
+    def listen_port(self, port):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.bind(('0.0.0.0', port))
+        sock.listen(5)
+        
+        while True:
+            client, addr = sock.accept()
+            self.scanners[addr[0]] += 1
+            client.close()
+            
+            if self.scanners[addr[0]] > 10:
+                print(f"Port scan detected from {addr[0]}")
+                # Alert IDS/IPS here
+
+honeypot = PortHoneypot()
+honeypot.start_honeypot()
+"""
+
+===============================================================================
+# ELASTICSEARCH / KIBANA DETECTION
+===============================================================================
+
+# Elasticsearch query for port scan detection
+"""
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "term": { "network.protocol": "tcp" } },
+        { "range": { "@timestamp": { "gte": "now-1m" } } }
+      ]
+    }
+  },
+  "aggs": {
+    "scanners": {
+      "terms": { "field": "source.ip", "size": 100 },
+      "aggs": {
+        "unique_ports": {
+          "cardinality": { "field": "destination.port" }
+        }
+      }
+    }
+  }
+}
+"""
+
+===============================================================================
+# IMPORTANT NOTES
+===============================================================================
+
+1. **TUNING**
+   - Adjust thresholds based on normal network traffic
+   - Whitelist trusted scanners (monitoring tools)
+   - Consider time of day variations
+
+2. **FALSE POSITIVES**
+   - legitimate services (NTP, DNS) may trigger alerts
+   - CDN services appear as multiple connections
+   - Load balancers show as single IP to many ports
+
+3. **RESPONSE ACTIONS**
+   - Log all scan attempts
+   - Rate limit suspicious IPs
+   - Block persistent scanners
+   - Notify security team
+
+4. **COMPLIANCE**
+   - PCI DSS requirement 11.4
+   - ISO 27001 A.12.6.1
+   - NIST SP 800-53
+
+5. **INTEGRATION**
+   - Feed alerts to SIEM
+   - Correlate with other events
+   - Automate response where appropriate
+
+===============================================================================
+# END OF RULES
+===============================================================================
