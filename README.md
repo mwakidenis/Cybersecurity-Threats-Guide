@@ -6,6 +6,14 @@
 
 A comprehensive guide to understanding, detecting, and preventing cybersecurity threats and vulnerabilities. This repository contains detailed documentation, detection scripts, and prevention strategies for various security threats.
 
+
+## 🌐 Live Documentation Site
+
+Visit the live site: **[https://cybersecurity-threats-guide.vercel.app](https://cybersecurity-threats-guide.vercel.app)**
+
+The site provides a clean, readable version of this documentation.
+
+
 ## 📋 Table of Contents
 
 - [About](#about)
