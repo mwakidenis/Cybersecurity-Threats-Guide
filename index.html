@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersecurity Threats & Vulnerabilities Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .category-card:nth-child(1) { animation-delay: 0.1s; }
+        .category-card:nth-child(2) { animation-delay: 0.2s; }
+        .category-card:nth-child(3) { animation-delay: 0.3s; }
+        .category-card:nth-child(4) { animation-delay: 0.4s; }
+        .category-card:nth-child(5) { animation-delay: 0.5s; }
+        .category-card:nth-child(6) { animation-delay: 0.6s; }
+        
+        .category-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+        
+        .category-icon {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        
+        .category-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .category-list {
+            list-style: none;
+        }
+        
+        .category-list li {
+            padding: 8px 0;
+            color: #666;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .category-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .category-list li:before {
+            content: "•";
+            color: #667eea;
+            font-weight: bold;
+            display: inline-block;
+            width: 20px;
+        }
+        
+        .cta-section {
+            text-align: center;
+            background: white;
+            border-radius: 15px;
+            padding: 60px 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.5s ease-out 0.7s forwards;
+            opacity: 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            margin: 10px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1.1em;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: white;
+            padding: 20px;
+        }
+        
+        .footer a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px dotted rgba(255,255,255,0.5);
+        }
+        
+        .footer a:hover {
+            border-bottom: 1px solid white;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .header {
+                padding: 40px 20px;
+            }
+            
+            .stat-number {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🛡️ Cybersecurity Threats & Vulnerabilities Guide</h1>
+            <p>A comprehensive educational resource for security professionals, developers, and enthusiasts. Learn to detect and prevent cyber threats with practical examples.</p>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Major Sections</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">18+</div>
+                <div class="stat-label">Security Topics</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">45+</div>
+                <div class="stat-label">Python Scripts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">74+</div>
+                <div class="stat-label">Total Files</div>
+            </div>
+        </div>
+        
+        <!-- Categories -->
+        <div class="categories-grid">
+            <div class="category-card">
+                <div class="category-icon">🌐</div>
+                <div class="category-title">Network Security</div>
+                <ul class="category-list">
+                    <li>DDoS Attacks</li>
+                    <li>Man-in-the-Middle</li>
+                    <li>Port Scanning</li>
+                    <li>DNS Spoofing</li>
+                </ul>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-icon">💻</div>
+                <div class="category-title">Web Security</div>
+                <ul class="category-list">
+                    <li>SQL Injection</li>
+                    <li>XSS Attacks</li>
+                    <li>CSRF</li>
+                    <li>Session Hijacking</li>
+                </ul>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-icon">🦠</div>
+                <div class="category-title">Malware Analysis</div>
+                <ul class="category-list">
+                    <li>Ransomware</li>
+                    <li>Trojans</li>
+                    <li>Rootkits</li>
+                    <li>Keyloggers</li>
+                </ul>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-icon">🎭</div>
+                <div class="category-title">Social Engineering</div>
+                <ul class="category-list">
+                    <li>Phishing</li>
+                    <li>Pretexting</li>
+                    <li>Baiting</li>
+                    <li>Tailgating</li>
+                </ul>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-icon">🔐</div>
+                <div class="category-title">Cryptography</div>
+                <ul class="category-list">
+                    <li>Encryption</li>
+                    <li>Hashing</li>
+                    <li>Digital Signatures</li>
+                    <li>Key Management</li>
+                </ul>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-icon">🚨</div>
+                <div class="category-title">Incident Response</div>
+                <ul class="category-list">
+                    <li>Digital Forensics</li>
+                    <li>Containment</li>
+                    <li>Recovery</li>
+                    <li>Post-Incident</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Call to Action -->
+        <div class="cta-section">
+            <h2 style="margin-bottom: 20px; color: #333;">Ready to Explore?</h2>
+            <p style="margin-bottom: 30px; color: #666; font-size: 1.1em;">Access all scripts, documentation, and tools on GitHub.</p>
+            <a href="https://github.com/Bd-Mutant7/Cybersecurity-Threats-Guide" class="btn btn-primary" target="_blank">
+                <i class="fab fa-github"></i> View on GitHub
+            </a>
+            <a href="#top" class="btn btn-secondary">
+                <i class="fas fa-arrow-up"></i> Back to Top
+            </a>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>
+                <i class="fas fa-shield-alt"></i> Cybersecurity Toolkit | 
+                <i class="fas fa-exclamation-triangle"></i> For Educational Use Only |
+                <i class="fas fa-star"></i> <a href="https://github.com/Bd-Mutant7/Cybersecurity-Threats-Guide/stargazers">Star on GitHub</a>
+            </p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                © 2024 Bd-Mutant7. All rights reserved.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/your-kit-id.js" crossorigin="anonymous"></script>
+    <!-- Fallback if you don't have Font Awesome kit -->
+    <script>
+        // Simple fallback if Font Awesome doesn't load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!document.querySelector('.fa-github')) {
+                console.log('Font Awesome not loaded, using text fallbacks');
+            }
+        });
+    </script>
+</body>
+</html>
