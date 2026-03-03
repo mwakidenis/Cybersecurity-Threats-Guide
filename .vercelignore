@@ -1,0 +1,14 @@
+# Ignore all Python files
+**/*.py
+**/__pycache__
+**/*.pyc
+
+# Ignore the Flask app folder
+cybersecurity-toolkit/
+api/
+
+# Ignore Python-related config files
+requirements.txt
+Pipfile
+Pipfile.lock
+runtime.txt
