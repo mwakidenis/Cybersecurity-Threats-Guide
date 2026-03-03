@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}API Keys - Cybersecurity Toolkit{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-key me-2"></i>API Key Management</h5>
+                    <form action="{{ url_for('generate_api_key_route') }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-light btn-sm">
+                            <i class="fas fa-plus me-1"></i>Generate New Key
+                        </button>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>API Keys</strong> allow you to programmatically access the Cybersecurity Toolkit. 
+                        Keep your keys secure and never share them publicly.
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>API Key</th>
+                                    <th>Created</th>
+                                    <th>Last Used</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key in api_keys %}
+                                <tr>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control form-control-sm" 
+                                                   value="{{ key.key }}" id="key-{{ loop.index }}" readonly>
+                                            <button class="btn btn-outline-secondary btn-sm" type="button" 
+                                                    onclick="copyKey('key-{{ loop.index }}')">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>{{ key.created.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>{{ key.last_used.strftime('%Y-%m-%d %H:%M') if key.last_used else 'Never' }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if key.active else 'danger' }}">
+                                            {{ 'Active' if key.active else 'Revoked' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="revokeKey('{{ key.key }}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        <i class="fas fa-key fa-3x mb-3"></i>
+                                        <p>No API keys generated yet</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6 class="mb-3">API Usage Examples</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card bg-light mb-3">
+                                <div class="card-body">
+                                    <h6>Python</h6>
+                                    <pre><code class="language-python">import requests
+
+headers = {
+    'X-API-Key': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+}
+
+data = {
+    'tool_id': 'portscan',
+    'parameters': {
+        'target': 'example.com',
+        'ports': '1-1000'
+    }
+}
+
+response = requests.post(
+    'http://localhost:5000/api/v1/scan',
+    headers=headers,
+    json=data
+)
+print(response.json())</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card bg-light mb-3">
+                                <div class="card-body">
+                                    <h6>cURL</h6>
+                                    <pre><code>curl -X POST http://localhost:5000/api/v1/scan \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tool_id": "portscan",
+    "parameters": {
+      "target": "example.com",
+      "ports": "1-1000"
+    }
+  }'</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Rate Limits:</strong> API requests are limited to 100 requests per hour per API key.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyKey(elementId) {
+    const input = document.getElementById(elementId);
+    input.select();
+    input.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    
+    // Show tooltip
+    alert('API key copied to clipboard!');
+}
+
+function revokeKey(key) {
+    if (confirm('Are you sure you want to revoke this API key? This action cannot be undone.')) {
+        fetch('/api/v1/revoke-key', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({api_key: key})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error revoking key: ' + data.error);
+            }
+        });
+    }
+}
+</script>
+{% endblock %}
