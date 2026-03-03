@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Cybersecurity Toolkit{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">Dashboard</h1>
+    
+    <!-- Status Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50">Active Scans</h6>
+                            <h2 class="text-white" id="active-scans">0</h2>
+                        </div>
+                        <i class="fas fa-play-circle fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50">Completed</h6>
+                            <h2 class="text-white" id="completed-scans">0</h2>
+                        </div>
+                        <i class="fas fa-check-circle fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card bg-warning text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50">Threats Found</h6>
+                            <h2 class="text-white" id="threats-found">0</h2>
+                        </div>
+                        <i class="fas fa-exclamation-triangle fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50">System Uptime</h6>
+                            <h2 class="text-white" id="uptime">0h</h2>
+                        </div>
+                        <i class="fas fa-clock fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line me-1"></i>
+                    Scan Activity
+                </div>
+                <div class="card-body">
+                    <canvas id="scanChart" style="height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-pie me-1"></i>
+                    Threat Distribution
+                </div>
+                <div class="card-body">
+                    <canvas id="threatChart" style="height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity and Tools -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-history me-1"></i>
+                    Recent Activity
+                </div>
+                <div class="card-body">
+                    <div class="timeline" id="activity-timeline">
+                        <div class="text-center text-muted py-3">
+                            <i class="fas fa-spinner fa-spin"></i> Loading...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-tools me-1"></i>
+                    Quick Tools
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <button class="btn btn-outline-primary w-100" onclick="quickTool('portscan')">
+                                <i class="fas fa-search"></i> Port Scan
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-outline-success w-100" onclick="quickTool('sqli')">
+                                <i class="fas fa-database"></i> SQLi Scan
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-outline-warning w-100" onclick="quickTool('phishing')">
+                                <i class="fas fa-envelope"></i> Phishing
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-outline-danger w-100" onclick="quickTool('ransomware')">
+                                <i class="fas fa-virus"></i> Ransomware
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-outline-info w-100" onclick="quickTool('hash')">
+                                <i class="fas fa-hashtag"></i> Hash Check
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-outline-secondary w-100" onclick="quickTool('forensic')">
+                                <i class="fas fa-microscope"></i> Forensics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Health -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-heartbeat me-1"></i>
+                    System Health
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label>CPU Usage</label>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-info" role="progressbar" id="cpu-usage" style="width: 0%">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label>Memory Usage</label>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-success" role="progressbar" id="memory-usage" style="width: 0%">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label>Disk Usage</label>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" id="disk-usage" style="width: 0%">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label>Network I/O</label>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" id="network-io" style="width: 0%">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Initialize dashboard data
+function loadDashboardData() {
+    fetch('/api/v1/dashboard/stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('active-scans').textContent = data.active_scans;
+            document.getElementById('completed-scans').textContent = data.completed_scans;
+            document.getElementById('threats-found').textContent = data.threats_found;
+            document.getElementById('uptime').textContent = data.uptime;
+            
+            // Update progress bars
+            document.getElementById('cpu-usage').style.width = data.cpu + '%';
+            document.getElementById('cpu-usage').textContent = data.cpu + '%';
+            document.getElementById('memory-usage').style.width = data.memory + '%';
+            document.getElementById('memory-usage').textContent = data.memory + '%';
+            document.getElementById('disk-usage').style.width = data.disk + '%';
+            document.getElementById('disk-usage').textContent = data.disk + '%';
+            document.getElementById('network-io').style.width = data.network + '%';
+            document.getElementById('network-io').textContent = data.network + '%';
+        });
+}
+
+// Scan activity chart
+const ctx1 = document.getElementById('scanChart').getContext('2d');
+new Chart(ctx1, {
+    type: 'line',
+    data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+            label: 'Scans',
+            data: [12, 19, 15, 17, 24, 30, 42],
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    }
+});
+
+// Threat distribution chart
+const ctx2 = document.getElementById('threatChart').getContext('2d');
+new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+        labels: ['Network', 'Web App', 'Malware', 'Social', 'Other'],
+        datasets: [{
+            data: [30, 25, 20, 15, 10],
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(153, 102, 255)'
+            ]
+        }]
+    }
+});
+
+// Update dashboard every 30 seconds
+setInterval(loadDashboardData, 30000);
+loadDashboardData();
+
+function quickTool(tool) {
+    window.location.href = `/${tool === 'portscan' ? 'network' : 
+                                 tool === 'sqli' ? 'webapp' :
+                                 tool === 'phishing' ? 'social' :
+                                 tool === 'ransomware' ? 'malware' :
+                                 tool === 'hash' ? 'crypto' : 'incident'}`;
+}
+</script>
+{% endblock %}
