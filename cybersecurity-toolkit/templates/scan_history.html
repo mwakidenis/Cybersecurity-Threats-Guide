@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Scan History - Cybersecurity Toolkit{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-history text-primary me-2"></i>Scan History</h1>
+            <p class="text-muted">View and manage all your previous security scans</p>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Tool</label>
+                            <select class="form-select" id="filterTool">
+                                <option value="all">All Tools</option>
+                                <option value="ddos">DDoS Detector</option>
+                                <option value="sqli">SQL Injection</option>
+                                <option value="phishing">Phishing Detector</option>
+                                <option value="ransomware">Ransomware Detector</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="filterStatus">
+                                <option value="all">All Status</option>
+                                <option value="completed">Completed</option>
+                                <option value="running">Running</option>
+                                <option value="failed">Failed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Date Range</label>
+                            <select class="form-select" id="filterDate">
+                                <option value="all">All Time</option>
+                                <option value="today">Today</option>
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Search</label>
+                            <input type="text" class="form-control" id="searchScan" 
+                                   placeholder="Search by ID or target...">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scans Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Scan ID</th>
+                                    <th>Tool</th>
+                                    <th>Target</th>
+                                    <th>Start Time</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                    <th>Findings</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scansList">
+                                {% for scan in scans %}
+                                <tr class="scan-row" data-tool="{{ scan.tool }}" data-status="{{ scan.status }}">
+                                    <td><code>{{ scan.id[:8] }}...</code></td>
+                                    <td>
+                                        <span class="badge bg-info">{{ scan.tool }}</span>
+                                    </td>
+                                    <td>{{ scan.parameters.url or scan.parameters.target or 'N/A' }}</td>
+                                    <td>{{ scan.start_time[:19].replace('T', ' ') }}</td>
+                                    <td>
+                                        {% if scan.results and scan.results.duration %}
+                                            {{ scan.results.duration }}s
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if scan.status == 'completed' %}
+                                            <span class="badge bg-success">Completed</span>
+                                        {% elif scan.status == 'running' %}
+                                            <span class="badge bg-primary">Running</span>
+                                        {% elif scan.status == 'failed' %}
+                                            <span class="badge bg-danger">Failed</span>
+                                        {% elif scan.status == 'cancelled' %}
+                                            <span class="badge bg-warning">Cancelled</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ scan.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if scan.results and scan.results.threats_found %}
+                                            <span class="badge bg-danger">{{ scan.results.threats_found }} threats</span>
+                                        {% else %}
+                                            <span class="badge bg-success">0 threats</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url_for('scan_results_page', scan_id=scan.id) }}" 
+                                               class="btn btn-sm btn-outline-primary" title="View Results">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-success" title="Download JSON"
+                                                    onclick="downloadResults('{{ scan.id }}', 'json')">
+                                                <i class="fas fa-file-code"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" title="Delete"
+                                                    onclick="deleteScan('{{ scan.id }}')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-5">
+                                        <i class="fas fa-history fa-4x mb-3"></i>
+                                        <h5>No scans yet</h5>
+                                        <p>Start your first security scan from the dashboard</p>
+                                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                                            <i class="fas fa-play me-2"></i>Start Scan
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <nav aria-label="Scan history pagination" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Filter functionality
+document.getElementById('filterTool').addEventListener('change', filterScans);
+document.getElementById('filterStatus').addEventListener('change', filterScans);
+document.getElementById('filterDate').addEventListener('change', filterScans);
+document.getElementById('searchScan').addEventListener('keyup', filterScans);
+
+function filterScans() {
+    const tool = document.getElementById('filterTool').value;
+    const status = document.getElementById('filterStatus').value;
+    const search = document.getElementById('searchScan').value.toLowerCase();
+    
+    const rows = document.querySelectorAll('.scan-row');
+    
+    rows.forEach(row => {
+        let show = true;
+        
+        if (tool !== 'all' && row.dataset.tool !== tool) {
+            show = false;
+        }
+        
+        if (status !== 'all' && row.dataset.status !== status) {
+            show = false;
+        }
+        
+        if (search) {
+            const text = row.textContent.toLowerCase();
+            if (!text.includes(search)) {
+                show = false;
+            }
+        }
+        
+        row.style.display = show ? '' : 'none';
+    });
+}
+
+function downloadResults(scanId, format) {
+    window.location.href = `/scan/export/${scanId}?format=${format}`;
+}
+
+function deleteScan(scanId) {
+    if (confirm('Are you sure you want to delete this scan? This action cannot be undone.')) {
+        fetch(`/scan/delete/${scanId}`, {method: 'DELETE'})
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error deleting scan: ' + data.error);
+                }
+            });
+    }
+}
+</script>
+{% endblock %}
