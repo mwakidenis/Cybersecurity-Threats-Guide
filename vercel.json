@@ -14,5 +14,10 @@
       "src": "/(.*)",
       "dest": "/README.md"
     }
-  ]
+  ],
+  "overrides": {
+    "*.py": {
+      "use": "@vercel/static"
+    }
+  }
 }
