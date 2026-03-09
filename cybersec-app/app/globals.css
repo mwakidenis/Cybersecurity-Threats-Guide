@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Bebas+Neue&family=Orbitron:wght@400;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #020608;
+  --surface: #050d12;
+  --border: #0d2a35;
+  --cyan: #00e5ff;
+  --green: #00ff9d;
+  --red: #ff2d55;
+  --yellow: #ffd700;
+  --orange: #ff9500;
+  --dim: #1a3a47;
+  --text: #a8c8d8;
+  --muted: #4a7a8a;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 229, 255, 0.012) 2px,
+      rgba(0, 229, 255, 0.012) 4px
+    );
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* Selection */
+::selection { background: rgba(0, 229, 255, 0.2); color: var(--cyan); }
+
+/* Grid pattern */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Glow effects */
+.glow-cyan { text-shadow: 0 0 20px rgba(0, 229, 255, 0.6); }
+.glow-green { text-shadow: 0 0 20px rgba(0, 255, 157, 0.6); }
+.glow-red { text-shadow: 0 0 20px rgba(255, 45, 85, 0.6); }
+
+/* Border glow */
+.border-glow-cyan { box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.3), 0 0 20px rgba(0, 229, 255, 0.1); }
+.border-glow-red { box-shadow: 0 0 0 1px rgba(255, 45, 85, 0.3), 0 0 20px rgba(255, 45, 85, 0.1); }
+
+/* Terminal cursor blink */
+.cursor::after {
+  content: '█';
+  animation: blink 1s step-end infinite;
+  color: var(--cyan);
+  opacity: 0.7;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 0.7; }
+  50%, 100% { opacity: 0; }
+}
+
+/* Scanline sweep */
+.scanline-sweep::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  animation: sweep 4s linear infinite;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+@keyframes sweep {
+  0% { top: 0%; }
+  100% { top: 100%; }
+}
+
+/* Card hover */
+.threat-card {
+  transition: all 0.2s ease;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.threat-card:hover {
+  border-color: rgba(0, 229, 255, 0.3);
+  box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.15), 0 8px 32px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Typing animation */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+.typing-text {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 0.8s steps(30) forwards;
+}
+
+/* Fade in stagger */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+.fade-in-1 { animation-delay: 0.1s; }
+.fade-in-2 { animation-delay: 0.2s; }
+.fade-in-3 { animation-delay: 0.3s; }
+.fade-in-4 { animation-delay: 0.4s; }
+.fade-in-5 { animation-delay: 0.5s; }
+.fade-in-6 { animation-delay: 0.6s; }
